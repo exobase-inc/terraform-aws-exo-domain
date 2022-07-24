@@ -14,13 +14,21 @@ locals {
 
 
 ##
-## DATA
+## Hosted Zone
 ##
 
 data "aws_route53_zone" "main" {
-  // Not creating the zone here because aws automatically
-  // creates one when the domain is purchased
-  name = var.domain
+  count = var.create_hosted_zone ? 0 : 1
+  name  = var.domain
+}
+
+resource "aws_route53_zone" "main" {
+  count = var.create_hosted_zone ? 1 : 0
+  name  = var.domain
+}
+
+locals {
+  zone_id = var.create_hosted_zone ? aws_route53_zone.main[0].zone_id : data.aws_route53_zone.main[0].zone_id
 }
 
 
@@ -55,7 +63,7 @@ resource "aws_route53_record" "main" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.main.zone_id
+  zone_id         = local.zone_id
 }
 
 ##
@@ -89,5 +97,5 @@ resource "aws_route53_record" "sub" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.main.zone_id
+  zone_id         = local.zone_id
 }
