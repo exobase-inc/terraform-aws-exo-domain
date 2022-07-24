@@ -1,5 +1,13 @@
 {
   "type": "domain",
   "service": "route-53",
-  "provider": "aws"
+  "provider": "aws",
+  "inputs": {
+    "domain": {
+      "label": "Domain"
+    },
+    "create_hosted_zone": {
+      "label": "Create Hosted Zone"
+    }
+  }
 }
