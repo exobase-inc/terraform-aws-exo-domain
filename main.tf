@@ -6,9 +6,9 @@
 locals {
   source_dir        = "${path.module}/source" // really "${path.cwd}/source"
   context           = jsondecode(var.exo_context)
-  service           = local.context.service.name
-  service_uid       = substr(local.context.service.id, -5, -1)
-  service_name_safe = join("-", split(" ", lower(replace(local.context.service.name, "[^\\w\\d]|_", ""))))
+  service           = local.context.unit.name
+  service_uid       = substr(local.context.unit.id, -5, -1)
+  service_name_safe = join("-", split(" ", lower(replace(local.context.unit.name, "[^\\w\\d]|_", ""))))
   service_key       = "${local.service_name_safe}-${local.service_uid}"
 }
 
